@@ -52,11 +52,14 @@ public class UsersResource {
 
         List<User> imageMetadata = usersBean.getUsersFilter(uriInfo);
 
-        return Response.status(Response.Status.OK).entity(imageMetadata).build();
+        return Response.status(Response.Status.OK).entity(imageMetadata)
+                .header("Access-Control-Allow-Origin", "*")
+                .build();
     }
 
 
     @Operation(description = "Get metadata for an image.", summary = "Get metadata for an image")
+
     @APIResponses({
             @APIResponse(responseCode = "200",
                     description = "Image metadata",
@@ -74,7 +77,9 @@ public class UsersResource {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        return Response.status(Response.Status.OK).entity(user).build();
+        return Response.status(Response.Status.OK).entity(user)
+                .header("Access-Control-Allow-Origin", "*")
+                .build();
     }
 
     @Operation(description = "Add image metadata.", summary = "Add metadata")
@@ -97,7 +102,9 @@ public class UsersResource {
             user = usersBean.createUser(user);
         }
 
-        return Response.status(Response.Status.CONFLICT).entity(user).build();
+        return Response.status(Response.Status.CONFLICT).entity(user)
+                .header("Access-Control-Allow-Origin", "*")
+                .build();
 
     }
 
@@ -122,10 +129,14 @@ public class UsersResource {
         user = usersBean.putUser(imageMetadataId, user);
 
         if (user == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .build();
         }
 
-        return Response.status(Response.Status.NOT_MODIFIED).build();
+        return Response.status(Response.Status.NOT_MODIFIED)
+                .header("Access-Control-Allow-Origin", "*")
+                .build();
 
     }
 
@@ -148,10 +159,14 @@ public class UsersResource {
         boolean deleted = usersBean.deleteUser(userId);
 
         if (deleted) {
-            return Response.status(Response.Status.NO_CONTENT).build();
+            return Response.status(Response.Status.NO_CONTENT)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .build();
         }
         else {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .build();
         }
     }
 
