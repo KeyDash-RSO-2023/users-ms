@@ -15,6 +15,7 @@ spec:
       containers:
         - image: tmiklavic/users:latest #to be changed
           name: users
+          imagePullPolicy: Always
           env:
             - name: KUMULUZEE_DATASOURCES0_CONNECTIONURL
               value: jdbc:postgresql://ep-royal-river-45970815.eu-central-1.aws.neon.tech/users?user=tilenmiklavic&password=U65pDcNzgwuj&sslmode=require
