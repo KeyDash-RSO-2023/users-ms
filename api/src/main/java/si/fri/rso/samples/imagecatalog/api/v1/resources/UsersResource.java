@@ -16,10 +16,7 @@ import si.fri.rso.samples.imagecatalog.services.beans.UsersBean;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -172,6 +169,15 @@ public class UsersResource {
 
 
 
-
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response handleCorsPreflightRequests(@Context HttpHeaders headers) {
+        return Response.ok()
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD")
+                .header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
+                .header("Access-Control-Allow-Credentials", "true")
+                .build();
+    }
 
 }
