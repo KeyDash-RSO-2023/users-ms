@@ -14,7 +14,7 @@ public class UsersConverter {
         dto.setName(entity.getName());
         dto.setAge(entity.getAge());
         dto.setEmail(entity.getEmail());
-
+        dto.setPassword(entity.getPassword());
         return dto;
 
     }
@@ -27,7 +27,7 @@ public class UsersConverter {
         entity.setName(dto.getName());
         entity.setAge(dto.getAge());
         entity.setEmail(dto.getEmail());
-
+        entity.setPassword(dto.getPassword());
         return entity;
 
     }

@@ -12,6 +12,10 @@ kumuluzee:
       connection-url: jdbc:postgresql://ep-royal-river-45970815.eu-central-1.aws.neon.tech/users?user=tilenmiklavic&password=U65pDcNzgwuj&sslmode=require
       username: tilenmiklavic
       password: U65pDcNzgwuj
+    - jndi-name: jdbc/SessionDS
+      connection-url: jdbc:postgresql://ep-royal-river-45970815.eu-central-1.aws.neon.tech/sessions?user=tilenmiklavic&password=U65pDcNzgwuj&sslmode=require
+      username: tilenmiklavic
+      password: U65pDcNzgwuj
   health:
     checks:
       data-source-health-check:

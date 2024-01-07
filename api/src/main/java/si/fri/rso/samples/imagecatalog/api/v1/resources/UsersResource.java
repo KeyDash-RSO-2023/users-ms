@@ -1,6 +1,6 @@
 package si.fri.rso.samples.imagecatalog.api.v1.resources;
 
-import  com.kumuluz.ee.logs.cdi.Log;
+import com.kumuluz.ee.logs.cdi.Log;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.headers.Header;
@@ -10,14 +10,21 @@ import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import si.fri.rso.samples.imagecatalog.lib.Session;
 import si.fri.rso.samples.imagecatalog.lib.User;
+import si.fri.rso.samples.imagecatalog.models.responses.SessionResponse;
+import si.fri.rso.samples.imagecatalog.models.entities.UserAuthInput;
+import si.fri.rso.samples.imagecatalog.services.beans.SessionBean;
 import si.fri.rso.samples.imagecatalog.services.beans.UsersBean;
+import si.fri.rso.samples.imagecatalog.services.services.PasswordService;
+import si.fri.rso.samples.imagecatalog.services.services.SessionService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 
@@ -30,8 +37,13 @@ public class UsersResource {
 
     private Logger log = Logger.getLogger(UsersResource.class.getName());
 
+
+
     @Inject
     private UsersBean usersBean;
+
+    @Inject
+    private SessionBean sessionBean;
 
 
     @Context
@@ -65,8 +77,7 @@ public class UsersResource {
             )})
     @GET
     @Path("/{userId}")
-    public Response getUser(@Parameter(description = "User ID.", required = true)
-                                     @PathParam("userId") Integer userId) {
+    public Response getUser(@Parameter(description = "User ID.", required = true) @PathParam("userId") Integer userId) {
 
         User user = usersBean.getUser(userId);
 
@@ -96,6 +107,7 @@ public class UsersResource {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         else {
+            user.setPassword(PasswordService.hashPassword(user.getPassword()));
             user = usersBean.createUser(user);
         }
 
@@ -103,6 +115,66 @@ public class UsersResource {
                 .header("Access-Control-Allow-Origin", "*")
                 .build();
 
+    }
+
+
+    @Operation(description = "Login user using username and password.", summary = "Login user")
+    @APIResponses({
+            @APIResponse(responseCode = "200",
+                    description = "Metadata successfully added."
+            ),
+            @APIResponse(responseCode = "403", description = "Wrong credentials .")
+    })
+    @GET
+    @Path("/login")
+    public Response login(@RequestBody(
+            description = "DTO object with username and password.",
+            required = true, content = @Content(
+            schema = @Schema(implementation = UserAuthInput.class))) UserAuthInput userAuthInput) {
+
+        if ((userAuthInput.getEmail() == null || userAuthInput.getPassword() == null)) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        User user = usersBean.getUserByEmail(userAuthInput.getEmail());
+
+        if (!PasswordService.verifyPassword(userAuthInput.getPassword(), user.getPassword())) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+        // delete all existing sessions
+        List<Session> existingSessions = sessionBean.getSessionsByUserId(user.getUserId());
+
+        System.out.println(existingSessions);
+        System.out.println(existingSessions.size());
+
+        if (!existingSessions.isEmpty()) {
+            for (Session session : existingSessions) {
+                sessionBean.deleteSession(session.getId());
+            }
+        }
+
+        // create new session
+        String sessionId = SessionService.generateSessionId();
+
+        Session session = new Session();
+        session.setId(sessionId);
+        session.setUserId(user.getUserId());
+        session.setValidUntil(SessionService.generateSessionValidUntil());
+
+        session = sessionBean.createSession(session);
+
+        System.out.println(session);
+
+        if (session == null) {
+            return Response.status(Response.Status.CONFLICT).build();
+        }
+
+        SessionResponse sessionEntity = new SessionResponse(user.getUserId(), user.getEmail(), sessionId, session.getValidUntil());
+
+        return Response.status(Response.Status.CONFLICT).entity(sessionEntity)
+                .header("Access-Control-Allow-Origin", "*")
+                .build();
     }
 
 

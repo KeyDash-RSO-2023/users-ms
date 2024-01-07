@@ -8,7 +8,9 @@ import java.time.Instant;
 @NamedQueries(value =
         {
                 @NamedQuery(name = "UsersEntity.getAll",
-                        query = "SELECT im FROM UserEntity im")
+                        query = "SELECT im FROM UserEntity im"),
+                @NamedQuery(name = "UsersEntity.getByEmail",
+                        query = "SELECT u FROM UserEntity u WHERE u.email = :email")
         })
 public class UserEntity {
 
@@ -27,6 +29,10 @@ public class UserEntity {
 
     @Column(name = "email")
     private String email;
+
+
+    @Column(name = "password")
+    private String password;
 
     @Column(name = "created")
     private Instant created;
@@ -70,6 +76,15 @@ public class UserEntity {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
 
     public Instant getCreated() {
         return created;

@@ -1,1 +1,2 @@
-INSERT INTO users (name, surname, age, email, created) VALUES ('Janez', 'Novak', 20, 'janez.novak@gmail.com', TIMESTAMP '2006-01-01 15:36:38');
+-- INSERT INTO users (name, surname, age, email, created) VALUES ('Janez', 'Novak', 20, 'janez.novak@gmail.com', TIMESTAMP '2006-01-01 15:36:38');
+-- INSERT INTO sessions (userId, sessionId) VALUES (1, 'baf7b24f-309f-4ff8-85f0-bfe55ff00c23');

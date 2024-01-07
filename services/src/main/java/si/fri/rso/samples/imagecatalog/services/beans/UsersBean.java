@@ -62,6 +62,26 @@ public class UsersBean {
         return user;
     }
 
+    public User getUserByEmail(String email) {
+
+        System.out.println(email);
+        TypedQuery<UserEntity> query = em.createNamedQuery("UsersEntity.getByEmail", UserEntity.class);
+        query.setParameter("email", email);
+
+        System.out.println(query);
+        List<UserEntity> users = query.getResultList();
+
+        System.out.println(users);
+        if (users.isEmpty()) {
+            throw new NotFoundException("User with email " + email + " not found");
+        }
+
+        UserEntity userEntity = users.get(0);
+
+        System.out.println(userEntity.getEmail());
+        return UsersConverter.toDto(userEntity);
+    }
+
     public User createUser(User user) {
 
         UserEntity userEntity = UsersConverter.toEntity(user);

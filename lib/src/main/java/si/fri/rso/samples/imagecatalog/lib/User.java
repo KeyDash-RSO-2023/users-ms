@@ -9,6 +9,7 @@ public class User {
     private String surname;
     private Integer age;
     private String email;
+    private String password;
     private Instant created;
 
     public Integer getUserId() {
@@ -49,6 +50,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Instant getCreated() {
