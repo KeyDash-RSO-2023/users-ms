@@ -4,12 +4,14 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class Session {
+    // ATTRIBUTES
     private String id;
 
     private Integer userId;
 
     private LocalDateTime validUntil;
 
+    // GETTERS AND SETTERS
     public String getId() {
         return id;
     }
@@ -34,4 +36,15 @@ public class Session {
         this.validUntil = validUntil;
     }
 
+    // CONSTRUCTORS
+    public Session() {
+        this.id = UUID.randomUUID().toString(); // Generate a unique ID
+        this.validUntil = LocalDateTime.now().plusHours(1); // Set the session to expire in 1 hour
+    }
+
+    public Session(int userId) {
+        this.id = UUID.randomUUID().toString(); // Generate a unique ID
+        this.validUntil = LocalDateTime.now().plusHours(1); // Set the session to expire in 1 hour
+        this.userId = userId;
+    }
 }

@@ -17,7 +17,6 @@ import si.fri.rso.samples.imagecatalog.models.entities.UserAuthInput;
 import si.fri.rso.samples.imagecatalog.services.beans.SessionBean;
 import si.fri.rso.samples.imagecatalog.services.beans.UsersBean;
 import si.fri.rso.samples.imagecatalog.services.services.PasswordService;
-import si.fri.rso.samples.imagecatalog.services.services.SessionService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -83,7 +82,6 @@ public class UsersResource {
         }
 
         return Response.status(Response.Status.OK).entity(user)
-                .header("Access-Control-Allow-Origin", "*")
                 .build();
     }
 
@@ -108,10 +106,7 @@ public class UsersResource {
             user = usersBean.createUser(user);
         }
 
-        return Response.status(Response.Status.CONFLICT).entity(user)
-                .header("Access-Control-Allow-Origin", "*")
-                .build();
-
+        return createSessionResponse(user);
     }
 
 
@@ -142,9 +137,6 @@ public class UsersResource {
         // delete all existing sessions
         List<Session> existingSessions = sessionBean.getSessionsByUserId(user.getUserId());
 
-        System.out.println(existingSessions);
-        System.out.println(existingSessions.size());
-
         if (!existingSessions.isEmpty()) {
             for (Session session : existingSessions) {
                 sessionBean.deleteSession(session.getId());
@@ -152,25 +144,20 @@ public class UsersResource {
         }
 
         // create new session
-        String sessionId = SessionService.generateSessionId();
+        return createSessionResponse(user);
+    }
 
-        Session session = new Session();
-        session.setId(sessionId);
-        session.setUserId(user.getUserId());
-        session.setValidUntil(SessionService.generateSessionValidUntil());
-
+    private Response createSessionResponse(User user) {
+        Session session = new Session(user.getUserId());
         session = sessionBean.createSession(session);
-
-        System.out.println(session);
 
         if (session == null) {
             return Response.status(Response.Status.CONFLICT).build();
         }
 
-        SessionResponse sessionEntity = new SessionResponse(user.getUserId(), user.getEmail(), sessionId, session.getValidUntil());
+        SessionResponse sessionEntity = new SessionResponse(user.getUserId(), user.getEmail(), session.getId(), session.getValidUntil());
 
         return Response.status(Response.Status.OK).entity(sessionEntity)
-                .header("Access-Control-Allow-Origin", "*")
                 .build();
     }
 
@@ -196,12 +183,10 @@ public class UsersResource {
 
         if (user == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .header("Access-Control-Allow-Origin", "*")
                     .build();
         }
 
         return Response.status(Response.Status.NOT_MODIFIED)
-                .header("Access-Control-Allow-Origin", "*")
                 .build();
 
     }
@@ -226,38 +211,11 @@ public class UsersResource {
 
         if (deleted) {
             return Response.status(Response.Status.NO_CONTENT)
-                    .header("Access-Control-Allow-Origin", "*")
                     .build();
         }
         else {
             return Response.status(Response.Status.NOT_FOUND)
-                    .header("Access-Control-Allow-Origin", "*")
                     .build();
         }
     }
-
-
-
-    @OPTIONS
-    @Path("{path : .*}")
-    public Response handleCorsPreflightRequests(@Context HttpHeaders headers) {
-        return Response.ok()
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD")
-                .header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
-                .header("Access-Control-Allow-Credentials", "true")
-                .build();
-    }
-
-    @OPTIONS
-    @Path("/login")
-    public Response handleLoginCorsPreflightRequests() {
-        return Response.ok()
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD")
-                .header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
-                .header("Access-Control-Allow-Credentials", "true")
-                .build();   
-    }
-
 }
