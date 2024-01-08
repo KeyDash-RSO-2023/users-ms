@@ -24,7 +24,6 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 
@@ -36,8 +35,6 @@ import java.util.logging.Logger;
 public class UsersResource {
 
     private Logger log = Logger.getLogger(UsersResource.class.getName());
-
-
 
     @Inject
     private UsersBean usersBean;
@@ -125,7 +122,7 @@ public class UsersResource {
             ),
             @APIResponse(responseCode = "403", description = "Wrong credentials .")
     })
-    @GET
+    @POST
     @Path("/login")
     public Response login(@RequestBody(
             description = "DTO object with username and password.",
@@ -172,7 +169,7 @@ public class UsersResource {
 
         SessionResponse sessionEntity = new SessionResponse(user.getUserId(), user.getEmail(), sessionId, session.getValidUntil());
 
-        return Response.status(Response.Status.CONFLICT).entity(sessionEntity)
+        return Response.status(Response.Status.OK).entity(sessionEntity)
                 .header("Access-Control-Allow-Origin", "*")
                 .build();
     }
@@ -250,6 +247,17 @@ public class UsersResource {
                 .header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
                 .header("Access-Control-Allow-Credentials", "true")
                 .build();
+    }
+
+    @OPTIONS
+    @Path("/login")
+    public Response handleLoginCorsPreflightRequests() {
+        return Response.ok()
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD")
+                .header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
+                .header("Access-Control-Allow-Credentials", "true")
+                .build();   
     }
 
 }
