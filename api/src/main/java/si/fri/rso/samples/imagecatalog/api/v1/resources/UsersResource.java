@@ -45,20 +45,19 @@ public class UsersResource {
     @Context
     protected UriInfo uriInfo;
 
-    @Operation(description = "Get all image metadata.", summary = "Get all metadata")
+    @Operation(description = "Get all users.", summary = "Get all users")
     @APIResponses({
             @APIResponse(responseCode = "200",
-                    description = "List of image metadata",
+                    description = "List of users",
                     content = @Content(schema = @Schema(implementation = User.class, type = SchemaType.ARRAY)),
                     headers = {@Header(name = "X-Total-Count", description = "Number of objects in list")}
             )})
     @GET
-    public Response getImageMetadata() {
+    public Response getUsers() {
 
-        List<User> imageMetadata = usersBean.getUsersFilter(uriInfo);
+        List<User> users = usersBean.getUsers(uriInfo);
 
-        return Response.status(Response.Status.OK).entity(imageMetadata)
-                .header("Access-Control-Allow-Origin", "*")
+        return Response.status(Response.Status.OK).entity(users)
                 .build();
     }
 
@@ -203,11 +202,80 @@ public class UsersResource {
             )
     })
     @DELETE
-    @Path("{userId}")
+    @Path("/{userId}")
     public Response deleteUser(@Parameter(description = "User ID.", required = true)
                                         @PathParam("userId") Integer userId){
 
         boolean deleted = usersBean.deleteUser(userId);
+
+        if (deleted) {
+            return Response.status(Response.Status.NO_CONTENT)
+                    .build();
+        }
+        else {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .build();
+        }
+    }
+
+
+    @Operation(description = "Get all sessions.", summary = "Get all sessions")
+    @APIResponses({
+            @APIResponse(responseCode = "200",
+                    description = "List of sessions",
+                    content = @Content(schema = @Schema(implementation = Session.class, type = SchemaType.ARRAY)),
+                    headers = {@Header(name = "X-Total-Count", description = "Number of objects in list")}
+            )})
+    @GET
+    @Path("/sessions")
+    public Response getSessions() {
+
+        List<Session> sessions = sessionBean.getSessions();
+
+        return Response.status(Response.Status.OK).entity(sessions)
+                .build();
+    }
+
+
+    @Operation(description = "Get session.", summary = "Get session")
+
+    @APIResponses({
+            @APIResponse(responseCode = "200",
+                    description = "Session",
+                    content = @Content(
+                            schema = @Schema(implementation = Session.class))
+            )})
+    @GET
+    @Path("/sessions/{sessionId}")
+    public Response getSession(@Parameter(description = "Session ID.", required = true) @PathParam("sessionId") Integer sessionId) {
+
+        Session session = sessionBean.getSession(sessionId);
+
+        if (session == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(session)
+                .build();
+    }
+
+    @Operation(description = "Delete session.", summary = "Delete session")
+    @APIResponses({
+            @APIResponse(
+                    responseCode = "200",
+                    description = "Session successfully deleted."
+            ),
+            @APIResponse(
+                    responseCode = "404",
+                    description = "Not found."
+            )
+    })
+    @DELETE
+    @Path("/sessions/{sessionId}")
+    public Response deleteSession(@Parameter(description = "Session ID.", required = true)
+                               @PathParam("sessionId") String sessionId){
+
+        boolean deleted = sessionBean.deleteSession(sessionId);
 
         if (deleted) {
             return Response.status(Response.Status.NO_CONTENT)

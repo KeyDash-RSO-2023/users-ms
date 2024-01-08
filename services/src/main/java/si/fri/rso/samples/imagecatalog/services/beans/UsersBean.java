@@ -40,7 +40,7 @@ public class UsersBean {
     }
 
     @Timed
-    public List<User> getUsersFilter(UriInfo uriInfo) {
+    public List<User> getUsers(UriInfo uriInfo) {
 
         QueryParameters queryParameters = QueryParameters.query(uriInfo.getRequestUri().getQuery()).defaultOffset(0)
                 .build();

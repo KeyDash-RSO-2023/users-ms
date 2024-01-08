@@ -16,7 +16,7 @@ public class AccessControlResponseFilter implements ContainerResponseFilter {
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
         final MultivaluedMap<String,Object> headers = responseContext.getHeaders();
 
-        headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
+        headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS, DELETE");
         headers.add("Access-Control-Allow-Origin", "*");
         if (requestContext.getMethod().equalsIgnoreCase("OPTIONS")) {
             headers.add("Access-Control-Allow-Headers", requestContext.getHeaderString("Access-Control-Request-Headers"));
