@@ -3,13 +3,16 @@ kumuluzee:
   env:
     name: dev
   version: 1.0.0
+  config:
+    start-retry-delay-ms: 500
+    environment-variables: true
   server:
     base-url: http://localhost:8080
     http:
       port: 8080
   datasources:
     - jndi-name: jdbc/ImageMetadataDS
-      connection-url: ${DB_CONNECTIONURL}
+      connection-url: jdbc:postgresql://ep-royal-river-45970815.eu-central-1.aws.neon.tech/users?sslmode=require
       username: ${DB_USERNAME}
       password: ${DB_PASSWORD}
   health:
