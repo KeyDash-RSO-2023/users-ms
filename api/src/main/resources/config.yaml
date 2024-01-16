@@ -7,7 +7,7 @@ kumuluzee:
     start-retry-delay-ms: 500
     environment-variables: true
   server:
-    base-url: ${BASE_URL}
+    base-url: http://51.12.152.201
     http:
       port: 8080
   datasources:
