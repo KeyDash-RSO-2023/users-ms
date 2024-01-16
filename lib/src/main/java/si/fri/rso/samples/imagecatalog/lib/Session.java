@@ -39,12 +39,12 @@ public class Session {
     // CONSTRUCTORS
     public Session() {
         this.id = UUID.randomUUID().toString(); // Generate a unique ID
-        this.validUntil = LocalDateTime.now().plusHours(1); // Set the session to expire in 1 hour
+        this.validUntil = LocalDateTime.now().plusHours(3); // Set the session to expire in 1 hour
     }
 
     public Session(int userId) {
         this.id = UUID.randomUUID().toString(); // Generate a unique ID
-        this.validUntil = LocalDateTime.now().plusHours(1); // Set the session to expire in 1 hour
+        this.validUntil = LocalDateTime.now().plusHours(3); // Set the session to expire in 1 hour
         this.userId = userId;
     }
 }
