@@ -55,4 +55,5 @@ kubectl describe secret pg-pass
 
 ## Swagger
 API docs are available on the path `/openapi`. For UI, use the path `/api-specs/ui`, for example http://localhost:8080/api-specs/ui.
-Deployed Swagger: http://51.12.152.201/users/api-specs/ui/?url=http://51.12.152.201/users/openapi&oauth2RedirectUrl=http://51.12.152.201/users/api-specs/ui/oauth2-redirect.html
+[Swagger](http://51.12.152.201/users/api-specs/ui/?url=http://51.12.152.201/users/openapi&oauth2RedirectUrl=http://51.12.152.201/users/api-specs/ui/oauth2-redirect.html)
+[Open API](http://51.12.152.201/users/openapi)
